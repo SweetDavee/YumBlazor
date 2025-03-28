@@ -12,7 +12,7 @@ using YumBlazor.Data;
 namespace YumBlazor.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250327082211_addProductToDb")]
+    [Migration("20250328091209_addProductToDb")]
     partial class addProductToDb
     {
         /// <inheritdoc />
@@ -265,9 +265,6 @@ namespace YumBlazor.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Category.Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -289,7 +286,7 @@ namespace YumBlazor.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Category.Id");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Product");
                 });
@@ -349,7 +346,9 @@ namespace YumBlazor.Migrations
                 {
                     b.HasOne("YumBlazor.Data.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("Category.Id");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
                 });

@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-YumBlazor-5f6b87a0-9021-4b55-a7b7-9273c25b5ae5</UserSecretsId>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,7 +26,7 @@
     <Folder Include="Services\Extensions" />
     <Folder Include="Services\" />
     <Folder Include="ViewModels\" />
-    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\images\product\" />
   </ItemGroup>
-
+  
 </Project>

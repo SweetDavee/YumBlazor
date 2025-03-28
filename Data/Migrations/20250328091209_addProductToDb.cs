@@ -21,23 +21,23 @@ namespace YumBlazor.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SpecialTag = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId0 = table.Column<int>(name: "Category.Id", type: "int", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Product", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Product_Category_Category.Id",
-                        column: x => x.CategoryId0,
+                        name: "FK_Product_Category_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Category",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Product_Category.Id",
+                name: "IX_Product_CategoryId",
                 table: "Product",
-                column: "Category.Id");
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
