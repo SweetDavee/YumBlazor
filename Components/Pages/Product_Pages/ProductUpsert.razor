@@ -14,7 +14,7 @@
 }
 else
 {
-    <div class="card shadow border-0 mt-4">
+    <div class="card shadow border-0 m-4">
         <div class="card-header bg-black bg-gradient m-lg-0 py-3">
             <div class="row">
                 <div class="col-12 text-center">
@@ -59,7 +59,7 @@ else
                         @if(Product.ImageUrl is null)
                         {
                             <InputFile OnChange="LoadFiles" @bind-Value="Product.Price" class="form-control pb-3" id="customFile"
-                                       accept="image/x-png,image/jpeg"></InputFile>
+                            accept="image/x-png,image/jpeg"></InputFile>
                             <label for="customFile">Upload Image</label>
                         }
 
@@ -189,7 +189,10 @@ else
         var filePathToDeleteImage = Path.Combine(_directoryPath, fileToDelete);
 
         if (!File.Exists(filePathToDeleteImage))
+        {
+            Product.ImageUrl = null;
             return;
+        }
 
         File.Delete(filePathToDeleteImage);
 
