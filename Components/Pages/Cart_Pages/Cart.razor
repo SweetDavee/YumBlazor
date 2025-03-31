@@ -164,9 +164,6 @@ else
 
     private async Task UpdateCartItem(int productId, int updateBy)
     {
-
-
-
         var result = await
         _shoppintCartRepository.UpdateCartAsync(OrderHeader.UserId, productId, updateBy);
 

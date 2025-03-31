@@ -1,0 +1,135 @@
+﻿@page "/order/list"
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@inject IOrderRepository _orderRepository
+@inject NavigationManager _navigationManager
+@attribute [Authorize]
+
+@if (IsProcessing)
+{
+    <div class="position-absolute w-100 vh-100 d-flex flex-column align-items-center bg-white justify-content-center">
+        <img src="/images/loading.gif" alt="loading" />
+    </div>
+}
+else
+{
+    <div class="card shadow border-0 m-4">
+        <div class="card-header bg-black bg-gradient m-lg-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">Order List</h2>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+
+            @if (OrderHeaders.Any())
+            {
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <th>Email</th>
+                            <th>Order Total</th>
+                            <th>Order Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var obj in OrderHeaders)
+                        {
+                            <tr>
+                                <td>
+                                    @obj.Id
+                                </td>
+                                <td>
+                                    @obj.Name
+                                </td>
+                                <td>
+                                    @obj.PhoneNumber
+                                </td>
+                                <td>
+                                    @obj.Email
+                                </td>
+                                <td>
+                                    @obj.OrderTotal.ToString("c")
+                                </td>
+                                <td>
+                                    @obj.OrderDate
+                                </td>
+                                <td>
+                                    @obj.Status
+                                </td>
+                                <td>
+                                    <a href="@($"order/details/{obj.Id}")" class="btn btn-primary">
+                                        <i class="bi bi-pencil-square"></i> Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private bool IsProcessing { get; set; } = true;
+    private IEnumerable<OrderHeader> OrderHeaders { get; set; } = new List<OrderHeader>();
+
+    private bool? IsAdmin { get; set; }
+    private string? UserId { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadOrderHeaders();
+            IsProcessing = false;
+            StateHasChanged();
+        }
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task LoadOrderHeaders()
+    {
+        IsProcessing = true;
+        StateHasChanged();
+
+        await CheckAuthorization();
+        if(IsAdmin == true)
+        {
+            OrderHeaders = await _orderRepository.GetAllAsync();
+        }
+        else
+        {
+            OrderHeaders = await _orderRepository.GetAllAsync(UserId);
+        }
+
+
+        IsProcessing = false;
+    }
+
+    private async Task CheckAuthorization()
+    {
+        if(AuthenticationState is not null)
+        {
+            var authState = await AuthenticationState;
+            var user = authState?.User;
+
+            IsAdmin = user?.IsInRole(SD.Role_Admin);
+            UserId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+    }
+}
